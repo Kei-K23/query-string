@@ -4,10 +4,10 @@ version = "0.1.0"
 authors = ["Kei-K23 <arkar.dev.kei@gmail.com>"]
 description = "Parser for Rust source code"
 edition = "2021"
-keywords = ["macros", "syn"]
+keywords = ["query-string", "query", "parser", "builder"]
 license = "MIT"
 readme = "README.md"
-categories = ["algorithms", "parser", "query-string", "query", "builder"]
+categories = ["url", "parser", "query", "builder"]
 homepage = "https://github.com/Kei-K23/query-string"
 repository = "https://github.com/Kei-K23/query-string"
 
