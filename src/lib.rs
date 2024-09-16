@@ -6,7 +6,7 @@ use helper::remove_char;
 
 /// Parse query string into key value pair
 pub fn parse(query: &str) -> HashMap<String, String> {
-    // Remove unnecessary part of query
+    // Remove unnecessary part of query '?#!'
     let query = remove_char(query, "?#!");
 
     query
@@ -28,8 +28,13 @@ mod tests {
     #[test]
     fn test_parse() {
         let query = "foo=bar&baz=qux";
+        let query_1 = "?foo=bar&baz=qux";
         let result = parse(query);
+        let result_1 = parse(query_1);
+
         assert_eq!(result.get("foo"), Some(&"bar".to_string()));
         assert_eq!(result.get("baz"), Some(&"qux".to_string()));
+        assert_eq!(result_1.get("foo"), Some(&"bar".to_string()));
+        assert_eq!(result_1.get("baz"), Some(&"qux".to_string()));
     }
 }
