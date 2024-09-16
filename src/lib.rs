@@ -21,6 +21,14 @@ pub fn parse(query: &str) -> HashMap<String, String> {
         .collect()
 }
 
+pub fn stringify(params: &HashMap<String, String>) -> String {
+    params
+        .iter()
+        .map(|key, value| format!("{}={}", key, value))
+        .collect::<Vec<String>>()
+        .join("&")
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -36,5 +44,15 @@ mod tests {
         assert_eq!(result.get("baz"), Some(&"qux".to_string()));
         assert_eq!(result_1.get("foo"), Some(&"bar".to_string()));
         assert_eq!(result_1.get("baz"), Some(&"qux".to_string()));
+    }
+
+    #[test]
+    fn test_stringify() {
+        let mut params = HashMap::new();
+        params.insert("foo".to_string(), "bar".to_string());
+        params.insert("baz".to_string(), "qux".to_string());
+        let result = stringify(&params);
+        assert!(result.contains("foo=bar"));
+        assert!(result.contains("baz=qux"));
     }
 }
