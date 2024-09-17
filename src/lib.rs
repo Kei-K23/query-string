@@ -24,7 +24,7 @@ pub fn parse(query: &str) -> HashMap<String, String> {
 pub fn stringify(params: &HashMap<String, String>) -> String {
     params
         .iter()
-        .map(|key, value| format!("{}={}", key, value))
+        .map(|(key, value)| format!("{}={}", key, value))
         .collect::<Vec<String>>()
         .join("&")
 }
