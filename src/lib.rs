@@ -52,8 +52,8 @@ pub fn decode(input: &str) -> io::Result<String> {
 }
 
 /// Parse query string into key value pair
-pub fn parse(query: &str) -> HashMap<String, String> {
-    let mut hashmap: HashMap<String, String> = HashMap::new();
+pub fn parse(query: &str) -> HashMap<String, Vec<String>> {
+    let mut hashmap: HashMap<String, Vec<String>> = HashMap::new();
 
     // Remove unnecessary part of query '?#!'
     let query_str = remove_char(query, "?#!");
@@ -64,7 +64,11 @@ pub fn parse(query: &str) -> HashMap<String, String> {
         let key = pairs.next().unwrap_or_default();
         let value = pairs.next().unwrap_or_default();
 
-        hashmap.insert(key.to_string(), value.to_string());
+        // Insert or append the value to the existing key
+        hashmap
+            .entry(key.to_string())
+            .or_insert_with(Vec::new)
+            .push(value.to_string());
     }
 
     hashmap
@@ -103,26 +107,35 @@ mod tests {
         let query = "foo=bar&baz=qux";
         let result = parse(query);
 
-        assert_eq!(result.get("foo"), Some(&"bar".to_string()));
-        assert_eq!(result.get("baz"), Some(&"qux".to_string()));
+        let result1 = result.get("foo").unwrap();
+        let result2 = result.get("baz").unwrap();
+
+        assert_eq!(result1[0], "bar");
+        assert_eq!(result2[0], "qux");
     }
 
-    // #[test]
-    // fn test_parse_multiple_value() {
-    //     let query = "foo=bar&foo=qux";
-    //     let result = parse(query);
+    #[test]
+    fn test_parse_multiple_value() {
+        let query = "foo=bar&foo=qux";
+        let result = parse(query);
 
-    //     assert_eq!(result.get("foo"), Some(&"bar".to_string()));
-    //     assert_eq!(result.get("foo"), Some(&"qux".to_string()));
-    // }
+        let result1 = result.get("foo").unwrap();
+
+        assert_eq!(result1.len(), 2);
+        assert_eq!(result1[0], "bar");
+        assert_eq!(result1[1], "qux");
+    }
 
     #[test]
     fn test_parse_with_leading_character() {
         let query = "?foo=bar&baz=qux";
         let result = parse(query);
 
-        assert_eq!(result.get("foo"), Some(&"bar".to_string()));
-        assert_eq!(result.get("baz"), Some(&"qux".to_string()));
+        let result1 = result.get("foo").unwrap();
+        let result2 = result.get("baz").unwrap();
+
+        assert_eq!(result1[0], "bar");
+        assert_eq!(result2[0], "qux");
     }
 
     #[test]

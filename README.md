@@ -65,16 +65,20 @@ The parse function parses a query string into a `HashMap<String, String>`.
 use your_crate_name::parse;
 
 fn main() {
-    let query = "?name=John&age=30&city=New%20York";
+   use query_string::parse;
+
+fn main() {
+    let query = "?foo=bar&foo=baz&name=John&age=30";
     let parsed = parse(query);
 
-    for (key, value) in &parsed {
-        println!("{}: {}", key, value);
+    for (key, values) in &parsed {
+        println!("{}: {:?}", key, values);
     }
     // Output:
-    // name: John
-    // age: 30
-    // city: New York
+    // foo: ["bar", "baz"]
+    // name: ["John"]
+    // age: ["30"]
+}
 }
 ```
 
@@ -107,9 +111,9 @@ Encodes the input string using percent-encoding. Reserved characters and non-ASC
 
 Decodes a percent-encoded string. Returns an error if the input contains invalid percent-encoded sequences.
 
-### `parse(query: &str) -> HashMap<String, String>`
+### `parse(query: &str) -> HashMap<String, Vec<String>>`
 
-Parses a URL query string into a HashMap<String, String>. Handles removing unnecessary characters like ?, #, and ! from the query string before parsing.
+Parses a URL query string into a `HashMap<String, Vec<String>>`. Handles removing unnecessary characters like ?, #, and ! from the query string before parsing.
 
 ### `stringify(params: &HashMap<String, String>) -> String`
 
