@@ -6,19 +6,21 @@ use helper::remove_char;
 
 /// Parse query string into key value pair
 pub fn parse(query: &str) -> HashMap<String, String> {
+    let mut hashmap: HashMap<String, String> = HashMap::new();
+
     // Remove unnecessary part of query '?#!'
-    let query = remove_char(query, "?#!");
+    let query_str = remove_char(query, "?#!");
 
-    query
-        .split("&")
-        .filter_map(|pair| {
-            let mut parts = pair.splitn(2, "=");
-            let key = parts.next()?; // Get the key
-            let value = parts.next().unwrap_or(""); // Get the value
+    for query in query_str.split("&") {
+        let mut pairs = query.split("="); // Split the key-value pair
 
-            Some((key.to_string(), value.to_string()))
-        })
-        .collect()
+        let key = pairs.next().unwrap_or_default();
+        let value = pairs.next().unwrap_or_default();
+
+        hashmap.insert(key.to_string(), value.to_string());
+    }
+
+    hashmap
 }
 
 pub fn stringify(params: &HashMap<String, String>) -> String {
@@ -36,14 +38,28 @@ mod tests {
     #[test]
     fn test_parse() {
         let query = "foo=bar&baz=qux";
-        let query_1 = "?foo=bar&baz=qux";
         let result = parse(query);
-        let result_1 = parse(query_1);
 
         assert_eq!(result.get("foo"), Some(&"bar".to_string()));
         assert_eq!(result.get("baz"), Some(&"qux".to_string()));
-        assert_eq!(result_1.get("foo"), Some(&"bar".to_string()));
-        assert_eq!(result_1.get("baz"), Some(&"qux".to_string()));
+    }
+
+    // #[test]
+    // fn test_parse_multiple_value() {
+    //     let query = "foo=bar&foo=qux";
+    //     let result = parse(query);
+
+    //     assert_eq!(result.get("foo"), Some(&"bar".to_string()));
+    //     assert_eq!(result.get("foo"), Some(&"qux".to_string()));
+    // }
+
+    #[test]
+    fn test_parse_with_leading_character() {
+        let query = "?foo=bar&baz=qux";
+        let result = parse(query);
+
+        assert_eq!(result.get("foo"), Some(&"bar".to_string()));
+        assert_eq!(result.get("baz"), Some(&"qux".to_string()));
     }
 
     #[test]
