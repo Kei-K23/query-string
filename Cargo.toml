@@ -1,10 +1,10 @@
 [package]
-name = "query-string"
+name = "query_string"
 version = "0.1.0"
 authors = ["Kei-K23 <arkar.dev.kei@gmail.com>"]
 description = "Parser for Rust source code"
 edition = "2021"
-keywords = ["query-string", "query", "parser", "builder"]
+keywords = ["query_string", "query", "parser", "builder"]
 license = "MIT"
 readme = "README.md"
 categories = ["url", "parser", "query", "builder"]
